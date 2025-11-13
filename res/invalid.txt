@@ -1,0 +1,12 @@
+create calendar --name TestCal --timezone America/New_York
+use calendar --name TestCal
+create event "Valid Event" from 2025-01-15T10:00 to 2025-01-15T11:00
+this is an invalid command that should not be recognized
+print all events
+create calendar --name TestCal --timezone InvalidTimezone
+use calendar --name NonExistentCalendar
+create event "Test" from invalid-date-time to 2025-01-15T11:00
+edit calendar --name TestCal --property invalidProperty someValue
+copy event NonExistent on 2025-01-15T10:00 --target TestCal to 2025-01-16T10:00
+export cal test.xyz
+exit

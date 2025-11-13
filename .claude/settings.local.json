@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew test:*)",
+      "Bash(./gradlew build:*)",
+      "Bash(./gradlew clean build:*)",
+      "Bash(java -jar build/libs/f25-hw5-cal2-group-NotChatGPT-1.0.jar:*)",
+      "Bash(java -jar build/libs/calendar-1.0.jar:*)",
+      "Bash(mvn clean compile:*)",
+      "Bash(./mvnw clean:*)",
+      "Bash(./gradlew clean:*)",
+      "Bash(./gradlew compileTestJava:*)",
+      "Bash(./gradlew compileJava:*)",
+      "Bash(./gradlew:*)",
+      "Bash(git mv:*)",
+      "Bash(chmod:*)",
+      "Bash(gradle clean build:*)",
+      "Bash(sh gradlew:*)",
+      "Bash(bash gradlew:*)",
+      "Bash(echo:*)",
+      "Bash($SHELL ./gradlew clean build)",
+      "Bash(java:*)",
+      "Bash(mkdir:*)",
+      "Bash(/usr/libexec/java_home:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

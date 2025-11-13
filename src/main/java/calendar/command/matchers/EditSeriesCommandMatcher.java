@@ -1,0 +1,37 @@
+package calendar.command.matchers;
+
+import calendar.command.CommandInterface;
+import calendar.command.CommandMatcher;
+import calendar.command.EditSeriesCommand;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * Matches "edit series" commands.
+ */
+public class EditSeriesCommandMatcher implements CommandMatcher {
+  private static final Pattern PATTERN = Pattern.compile(
+      "^\\s*edit\\s+series\\s+(\\S+)\\s+(.+?)\\s+from\\s+(\\S+)\\s+with\\s+(.+?)\\s*$",
+      Pattern.CASE_INSENSITIVE);
+
+  @Override
+  public CommandInterface tryMatch(String input) {
+    Matcher matcher = PATTERN.matcher(input);
+    if (matcher.matches()) {
+      String property = matcher.group(1);
+      String subject = stripQuotes(matcher.group(2));
+      String from = matcher.group(3);
+      String value = stripQuotes(matcher.group(4));
+      return new EditSeriesCommand(property, subject, from, value);
+    }
+    return null;
+  }
+
+  private String stripQuotes(String s) {
+    String t = s.trim();
+    if ((t.startsWith("\"") && t.endsWith("\"")) || (t.startsWith("'") && t.endsWith("'"))) {
+      return t.substring(1, t.length() - 1);
+    }
+    return t;
+  }
+}

@@ -1,0 +1,19 @@
+create calendar --name Work --timezone America/New_York
+create calendar --name Personal --timezone America/Los_Angeles
+use calendar --name Work
+create event "Team Meeting" from 2025-01-15T09:00 to 2025-01-15T10:00
+create event "Code Review" from 2025-01-15T14:00 to 2025-01-15T15:00
+create event "Lunch Break" from 2025-01-15T12:00 to 2025-01-15T13:00
+use calendar --name Personal
+create event "Gym" from 2025-01-15T18:00 to 2025-01-15T19:00
+create event "Dinner" from 2025-01-15T19:30 to 2025-01-15T21:00
+use calendar --name Work
+copy event Team Meeting on 2025-01-15T09:00 --target Personal to 2025-01-16T10:00
+use calendar --name Personal
+print all
+export cal test_export.ical
+export cal test_export.csv
+edit calendar --name Work --property timezone America/Chicago
+use calendar --name Work
+print all
+exit
