@@ -51,14 +51,23 @@ public class EditSeriesCommand implements CommandInterface {
 
       // Find the event by subject and start time
       LocalDateTime start = DateTimeParser.parseDateTime(startString);
-      LocalDate date = start.toLocalDate();
 
-      // Get all events on that date and find matching one by subject and start time
-      EventInterface event = model.getEventsOnDate(date).stream()
+      // Search all events for matching subject and start time
+      // This handles recurring series where the specified start date may not match
+      // the actual first occurrence (e.g., specifying Friday for a Tuesday series)
+      EventInterface event = model.getAllEvents().stream()
           .filter(e -> e.getSubject().equals(subject)
               && e.getStartDateTime().equals(start))
           .findFirst()
           .orElse(null);
+
+      // If not found by exact match, try finding by subject and series membership
+      if (event == null) {
+        event = model.getAllEvents().stream()
+            .filter(e -> e.getSubject().equals(subject) && e.getSeriesId().isPresent())
+            .findFirst()
+            .orElse(null);
+      }
 
       if (event == null) {
         view.displayError("Event not found: " + subject + " at " + startString);
