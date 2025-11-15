@@ -19,7 +19,7 @@ print events from 2025-01-15T00:00 to 2025-01-20T23:59
 show status on 2025-01-16T10:00
 edit event subject "Team Meeting" from 2025-01-15T09:00 to 2025-01-15T10:00 with "Executive Meeting"
 edit events location "Daily Standup" from 2025-01-20T09:00 with "Conference Room A"
-edit series description "Weekly Sync" from 2025-01-17T15:00 with "Important weekly synchronization meeting"
+edit series description "Weekly Sync" from 2025-01-21T15:00 with "Important weekly synchronization meeting"
 copy event Executive Meeting on 2025-01-15T09:00 --target Personal to 2025-01-25T10:00
 copy events on 2025-01-16 --target Personal to 2025-01-26
 copy events between 2025-01-15 and 2025-01-17 --target School to 2025-02-01

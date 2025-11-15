@@ -35,7 +35,7 @@ public class CreateAllDayEventCommand implements CommandInterface {
   @Override
   public boolean execute(CalendarManager manager, ViewInterface view) throws IOException {
     try {
-      // Get current calendar
+      
       Calendar currentCal = manager.getCurrentCalendar();
       if (currentCal == null) {
         view.displayError("No calendar selected. Use 'use calendar --name <name>' first.");
@@ -44,8 +44,8 @@ public class CreateAllDayEventCommand implements CommandInterface {
       CalendarModelInterface model = currentCal.getModel();
 
       LocalDate date = DateTimeParser.parseDate(dateString);
-      LocalTime startTime = LocalTime.of(8, 0);
-      LocalTime endTime = LocalTime.of(17, 0);
+      LocalTime startTime = LocalTime.of(Event.ALL_DAY_EVENT_START_HOUR, 0);
+      LocalTime endTime = LocalTime.of(Event.ALL_DAY_EVENT_END_HOUR, 0);
       LocalDateTime start = LocalDateTime.of(date, startTime);
       LocalDateTime end = LocalDateTime.of(date, endTime);
 

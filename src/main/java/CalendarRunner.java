@@ -35,7 +35,6 @@ public class CalendarRunner {
 
       String mode = args[1].toLowerCase();
       if (mode.equals("interactive")) {
-        // Use System.in wrapped in InputStreamReader for interactive mode
         Readable input = new InputStreamReader(System.in);
         ControllerInterface controller = new Controller(manager, view, parser, input, true);
         controller.run();

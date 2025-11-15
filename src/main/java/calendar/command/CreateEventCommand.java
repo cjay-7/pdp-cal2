@@ -34,7 +34,7 @@ public class CreateEventCommand implements CommandInterface {
   @Override
   public boolean execute(CalendarManager manager, ViewInterface view) {
     try {
-      // Get current calendar
+      
       Calendar currentCal = manager.getCurrentCalendar();
       if (currentCal == null) {
         view.displayError("No calendar selected. Use 'use calendar --name <name>' first.");
@@ -57,7 +57,7 @@ public class CreateEventCommand implements CommandInterface {
       try {
         view.displayError("Failed to create event: " + e.getMessage());
       } catch (Exception ignore) {
-        // ignore
+        System.out.println("Failed to create event: " + e.getMessage());
       }
       return false;
     }

@@ -56,7 +56,7 @@ public class CommandParserTest {
   }
 
   @Test
-  // TC 1: This test verifies that your program parses the entered script correctly.
+  
   public void testParseCreateEvent() {
     CommandInterface cmd =
         parser.parse("create event \"Meeting\" from 2025-06-01T09:00 to 2025-06-01T10:00");
@@ -159,10 +159,10 @@ public class CommandParserTest {
   }
 
   @Test
-  // TC 2 (closest): This test verifies that unrecognized commands are handled gracefully.
-  // Note: Full TC 2 (terminating with error pointing to offending command) is demonstrated
-  // in ControllerTest.testHeadlessControllerInvalidCommand where invalid commands
-  // display ERROR messages with the invalid input.
+  
+  
+  
+  
   public void testParseUnrecognizedCommand() {
     CommandInterface cmd = parser.parse("invalid command syntax");
     assertTrue(cmd instanceof NoOpCommand);
@@ -170,7 +170,7 @@ public class CommandParserTest {
 
   @Test
   public void testStripQuotesDoubleQuotes() {
-    // Test stripQuotes through parsing
+    
     CommandInterface cmd =
         parser.parse("create event \"Test Meeting\" from 2025-06-01T09:00 to 2025-06-01T10:00");
     assertNotNull(cmd);

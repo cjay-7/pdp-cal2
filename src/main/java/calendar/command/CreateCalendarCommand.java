@@ -34,7 +34,7 @@ public class CreateCalendarCommand implements CommandInterface {
 
   @Override
   public boolean execute(CalendarManager manager, ViewInterface view) throws IOException {
-    // Validate timezone format
+    
     ZoneId zoneId;
     try {
       zoneId = ZoneId.of(timezone);
@@ -44,7 +44,7 @@ public class CreateCalendarCommand implements CommandInterface {
       return false;
     }
 
-    // Create calendar
+    
     boolean success = manager.createCalendar(name, zoneId);
 
     if (success) {

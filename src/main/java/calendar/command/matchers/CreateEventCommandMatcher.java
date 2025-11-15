@@ -3,6 +3,7 @@ package calendar.command.matchers;
 import calendar.command.CommandInterface;
 import calendar.command.CommandMatcher;
 import calendar.command.CreateEventCommand;
+import calendar.util.StringUtils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,19 +19,11 @@ public class CreateEventCommandMatcher implements CommandMatcher {
   public CommandInterface tryMatch(String input) {
     Matcher matcher = PATTERN.matcher(input);
     if (matcher.matches()) {
-      String subject = stripQuotes(matcher.group(1));
+      String subject = StringUtils.stripQuotes(matcher.group(1));
       String from = matcher.group(2);
       String to = matcher.group(3);
       return new CreateEventCommand(subject, from, to);
     }
     return null;
-  }
-
-  private String stripQuotes(String s) {
-    String t = s.trim();
-    if ((t.startsWith("\"") && t.endsWith("\"")) || (t.startsWith("'") && t.endsWith("'"))) {
-      return t.substring(1, t.length() - 1);
-    }
-    return t;
   }
 }

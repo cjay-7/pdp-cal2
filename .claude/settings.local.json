@@ -21,7 +21,20 @@
       "Bash($SHELL ./gradlew clean build)",
       "Bash(java:*)",
       "Bash(mkdir:*)",
-      "Bash(/usr/libexec/java_home:*)"
+      "Bash(/usr/libexec/java_home:*)",
+      "Bash(tree:*)",
+      "Bash(output.txt)",
+      "Bash(cat:*)",
+      "Bash(gradle test:*)",
+      "Bash(gradle pitest:*)",
+      "Bash($SHELL ./gradlew pitest)",
+      "Bash(/Library/Java/JavaVirtualMachines/jdk-16.jdk/Contents/Home/bin/java:*)",
+      "Bash(dos2unix:*)",
+      "Bash(while read file)",
+      "Bash(done)",
+      "Bash(export JAVA_HOME=/usr/local/Cellar/openjdk@11/11.0.19/libexec/openjdk.jdk/Contents/Home)",
+      "Bash($JAVA_HOME/bin/java -version)",
+      "Bash($JAVA_HOME/bin/java:*)"
     ],
     "deny": [],
     "ask": []

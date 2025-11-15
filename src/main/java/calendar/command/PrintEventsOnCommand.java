@@ -28,7 +28,7 @@ public class PrintEventsOnCommand implements CommandInterface {
   @Override
   public boolean execute(CalendarManager manager, ViewInterface view) throws IOException {
     try {
-      // Get current calendar
+      
       Calendar currentCal = manager.getCurrentCalendar();
       if (currentCal == null) {
         view.displayError("No calendar selected. Use 'use calendar --name <name>' first.");

@@ -61,7 +61,7 @@ public class CopyEventsRangeCommand implements CommandInterface {
 
   @Override
   public boolean execute(CalendarManager manager, ViewInterface view) throws IOException {
-    // Check current calendar exists
+    
     Calendar sourceCalendar = manager.getCurrentCalendar();
     if (sourceCalendar == null) {
       view.displayMessage("Error: No calendar is currently in use. "
@@ -69,14 +69,14 @@ public class CopyEventsRangeCommand implements CommandInterface {
       return false;
     }
 
-    // Check target calendar exists
+    
     Calendar targetCalendar = manager.getCalendar(targetCalendarName);
     if (targetCalendar == null) {
       view.displayMessage("Error: Target calendar '" + targetCalendarName + "' not found.");
       return false;
     }
 
-    // Parse dates
+    
     LocalDate sourceStart;
     LocalDate sourceEnd;
     LocalDate targetStart;
@@ -94,13 +94,13 @@ public class CopyEventsRangeCommand implements CommandInterface {
       return false;
     }
 
-    // Find all events in the range
+    
     List<EventInterface> allEvents = sourceCalendar.getModel().getAllEvents();
     List<EventInterface> eventsInRange = new ArrayList<>();
 
     for (EventInterface event : allEvents) {
       LocalDate eventDate = event.getStartDateTime().toLocalDate();
-      // Check if event overlaps with range (inclusive)
+      
       if (!eventDate.isBefore(sourceStart) && !eventDate.isAfter(sourceEnd)) {
         eventsInRange.add(event);
       }
@@ -112,18 +112,18 @@ public class CopyEventsRangeCommand implements CommandInterface {
       return false;
     }
 
-    // Map old series IDs to new series IDs
+    
     Map<UUID, UUID> seriesIdMap = new HashMap<>();
 
-    // Calculate day offset
+    
     long dayOffset = java.time.temporal.ChronoUnit.DAYS.between(sourceStart, targetStart);
 
-    // Copy each event
+    
     int copiedCount = 0;
     int failedCount = 0;
 
     for (EventInterface sourceEvent : eventsInRange) {
-      // Convert times to target timezone
+      
       LocalDateTime sourceStartTime = sourceEvent.getStartDateTime();
       LocalDateTime sourceEndTime = sourceEvent.getEndDateTime();
 
@@ -139,11 +139,11 @@ public class CopyEventsRangeCommand implements CommandInterface {
           targetCalendar.getTimezone()
       );
 
-      // Adjust by day offset
+      
       targetStartTime = targetStartTime.plusDays(dayOffset);
       targetEndTime = targetEndTime.plusDays(dayOffset);
 
-      // Handle series ID
+      
       UUID newSeriesId = null;
       if (sourceEvent.getSeriesId().isPresent()) {
         UUID oldSeriesId = sourceEvent.getSeriesId().get();
@@ -155,7 +155,7 @@ public class CopyEventsRangeCommand implements CommandInterface {
         }
       }
 
-      // Create the new event
+      
       calendar.model.Event newEvent = new calendar.model.Event(
           sourceEvent.getSubject(),
           targetStartTime,
@@ -163,8 +163,8 @@ public class CopyEventsRangeCommand implements CommandInterface {
           sourceEvent.getDescription().orElse(null),
           sourceEvent.getLocation().orElse(null),
           sourceEvent.isPrivate(),
-          UUID.randomUUID(),  // New event ID
-          newSeriesId         // Preserved series ID (or null)
+          UUID.randomUUID(),  
+          newSeriesId         
       );
 
       if (targetCalendar.getModel().createEvent(newEvent)) {

@@ -17,7 +17,6 @@ public class ExitCommand implements CommandInterface {
 
   @Override
   public boolean execute(CalendarManager manager, ViewInterface view) throws IOException {
-    // Exit command returns false to signal the controller to stop
     return false;
   }
 }

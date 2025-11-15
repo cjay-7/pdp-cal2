@@ -70,7 +70,6 @@ public class Controller implements ControllerInterface {
         try {
           boolean shouldContinue = cmd.execute(manager, view);
           if (!shouldContinue) {
-            // Exit command found
             exitFound = true;
             break;
           }
@@ -81,7 +80,6 @@ public class Controller implements ControllerInterface {
         }
       }
 
-      // In headless mode, check if file ended without exit command
       if (!interactive && !exitFound) {
         view.displayError("Error: Commands file must end with 'exit' command");
       }

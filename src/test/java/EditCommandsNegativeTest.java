@@ -53,14 +53,14 @@ public class EditCommandsNegativeTest {
    */
   @Test
   public void testEditSeriesDuplicatePrevention() throws IOException {
-    // Existing single event that will clash
+    
     EventInterface clash = new Event("Clash",
         LocalDateTime.of(2025, 6, 2, 9, 0),
         LocalDateTime.of(2025, 6, 2, 9, 30),
         null, null, false, UUID.randomUUID(), null);
     model.createEvent(clash);
 
-    // A series with same times but different subject
+    
     EventInterface template = new Event("Standup",
         LocalDateTime.of(2025, 6, 2, 9, 0),
         LocalDateTime.of(2025, 6, 2, 9, 30),
@@ -72,7 +72,7 @@ public class EditCommandsNegativeTest {
         new calendar.model.EventSeries(seriesId, template, weekdays, null, 1, false);
     model.createEventSeries(series);
 
-    // Now attempt to rename entire series to "Clash" -> duplicate
+    
     EditSeriesCommand cmd = new EditSeriesCommand("subject", "Standup",
         "2025-06-02T09:00", "Clash");
     boolean ok = cmd.execute(manager, new calendar.view.ConsoleView(System.out));

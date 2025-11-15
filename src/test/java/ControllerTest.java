@@ -62,11 +62,11 @@ public class ControllerTest {
   }
 
   @Test
-  // TC 25: This test verifies that the controller successfully sends the expected
-  // inputs to the model. Input: Create event command. Expected: Model receives and
-  // processes command, displays "Created event".
+  
+  
+  
   public void testInteractiveControllerCreateAndExit() throws IOException {
-    // Create a mock manager/model to verify delegation
+    
     MockCalendarModel mockModel = new MockCalendarModel();
     MockCalendarManager mockManager = new MockCalendarManager(mockModel);
 
@@ -77,7 +77,7 @@ public class ControllerTest {
 
     controller.run();
 
-    // Verify the controller delegated to the model
+    
     assertTrue("Controller should have called model.createEvent", mockModel.createEventCalled);
     String output = outContent.toString();
     assertTrue(output.contains("Created event"));

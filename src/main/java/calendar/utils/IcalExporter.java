@@ -24,7 +24,7 @@ import java.util.List;
  * <pre>
  * BEGIN:VCALENDAR
  * VERSION:2.0
- * PRODID:-//Calendar Application//EN
+ * PRODID:-
  * BEGIN:VEVENT
  * UID:event-id@calendar.app
  * DTSTAMP:20250611T120000Z
@@ -38,6 +38,12 @@ import java.util.List;
  * </pre>
  */
 public class IcalExporter {
+
+  /**
+   * Maximum line length for iCal format as specified by RFC 5545.
+   * Lines longer than this must be folded with continuation.
+   */
+  private static final int RFC5545_LINE_FOLD_WIDTH = 75;
 
   private static final DateTimeFormatter ICAL_DATETIME_FORMATTER =
       DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
@@ -60,20 +66,16 @@ public class IcalExporter {
   public static String toIcal(List<EventInterface> events, String calendarName, ZoneId timezone) {
     StringBuilder ical = new StringBuilder();
 
-    // Calendar header
     ical.append("BEGIN:VCALENDAR\r\n");
     ical.append("VERSION:2.0\r\n");
-    ical.append("PRODID:-//Calendar Application//").append(escapeText(calendarName))
-        .append("//EN\r\n");
+    ical.append("PRODID:-//Calendar//").append(escapeText(calendarName)).append("//EN\r\n");
     ical.append("CALSCALE:GREGORIAN\r\n");
     ical.append("METHOD:PUBLISH\r\n");
 
-    // Add each event
     for (EventInterface event : events) {
       ical.append(formatEvent(event, timezone));
     }
 
-    // Calendar footer
     ical.append("END:VCALENDAR\r\n");
 
     return ical.toString();
@@ -91,46 +93,37 @@ public class IcalExporter {
 
     vevent.append("BEGIN:VEVENT\r\n");
 
-    // UID - unique identifier (required)
     vevent.append("UID:").append(event.getId().toString()).append("@calendar.app\r\n");
 
-    // DTSTAMP - creation timestamp (required)
     String dtstamp = ZonedDateTime.now(ZoneId.of("UTC"))
         .format(ICAL_DATETIME_FORMATTER);
     vevent.append("DTSTAMP:").append(dtstamp).append("\r\n");
 
-    // DTSTART - start time (required)
     String dtstart = convertToUtc(event.getStartDateTime(), timezone);
     vevent.append("DTSTART:").append(dtstart).append("\r\n");
 
-    // DTEND - end time (required)
     String dtend = convertToUtc(event.getEndDateTime(), timezone);
     vevent.append("DTEND:").append(dtend).append("\r\n");
 
-    // SUMMARY - event title (required)
     vevent.append("SUMMARY:").append(foldLine(escapeText(event.getSubject())))
         .append("\r\n");
 
-    // DESCRIPTION - optional
     if (event.getDescription().isPresent()) {
       vevent.append("DESCRIPTION:").append(foldLine(escapeText(event.getDescription().get())))
           .append("\r\n");
     }
 
-    // LOCATION - optional
     if (event.getLocation().isPresent()) {
       vevent.append("LOCATION:").append(foldLine(escapeText(event.getLocation().get())))
           .append("\r\n");
     }
 
-    // CLASS - privacy
     if (event.isPrivate()) {
       vevent.append("CLASS:PRIVATE\r\n");
     } else {
       vevent.append("CLASS:PUBLIC\r\n");
     }
 
-    // Series ID as X-property (non-standard but useful)
     if (event.getSeriesId().isPresent()) {
       vevent.append("X-SERIES-ID:").append(event.getSeriesId().get().toString()).append("\r\n");
     }
@@ -166,22 +159,22 @@ public class IcalExporter {
     }
 
     return text
-        .replace("\\", "\\\\")  // Escape backslash first
+        .replace("\\", "\\\\")  
         .replace(";", "\\;")
         .replace(",", "\\,")
         .replace("\n", "\\n")
-        .replace("\r", "");     // Remove carriage returns
+        .replace("\r", "");     
   }
 
   /**
-   * Folds long lines at 75 characters as per RFC 5545.
+   * Folds long lines at RFC 5545 specified width.
    * Continuation lines start with a space.
    *
    * @param text the text to fold
    * @return the folded text (without line breaks, as they're added by caller)
    */
   private static String foldLine(String text) {
-    if (text.length() <= 75) {
+    if (text.length() <= RFC5545_LINE_FOLD_WIDTH) {
       return text;
     }
 
@@ -190,10 +183,10 @@ public class IcalExporter {
 
     while (pos < text.length()) {
       if (pos > 0) {
-        folded.append("\r\n ");  // Continuation line starts with space
+        folded.append("\r\n ");
       }
 
-      int end = Math.min(pos + 75, text.length());
+      int end = Math.min(pos + RFC5545_LINE_FOLD_WIDTH, text.length());
       folded.append(text.substring(pos, end));
       pos = end;
     }

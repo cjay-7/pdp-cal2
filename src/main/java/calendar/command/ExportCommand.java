@@ -39,7 +39,6 @@ public class ExportCommand implements CommandInterface {
   @Override
   public boolean execute(CalendarManager manager, ViewInterface view) throws IOException {
     try {
-      // Get current calendar
       Calendar currentCal = manager.getCurrentCalendar();
       if (currentCal == null) {
         view.displayMessage("Error: No calendar is currently in use. "
@@ -49,19 +48,15 @@ public class ExportCommand implements CommandInterface {
 
       CalendarModelInterface model = currentCal.getModel();
 
-      // Create platform-independent path
       Path filePath = Paths.get(fileName).toAbsolutePath().normalize();
 
-      // Detect format by extension
       String lowerFileName = fileName.toLowerCase();
       boolean success = false;
 
       if (lowerFileName.endsWith(".csv")) {
-        // Export to CSV
         model.exportToCsv(filePath);
         success = true;
       } else if (lowerFileName.endsWith(".ical") || lowerFileName.endsWith(".ics")) {
-        // Export to iCal
         String icalContent = IcalExporter.toIcal(
             model.getAllEvents(),
             currentCal.getName(),
@@ -75,7 +70,6 @@ public class ExportCommand implements CommandInterface {
       }
 
       if (success) {
-        // Display absolute path
         view.displayMessage("Calendar exported to: " + filePath);
         return true;
       } else {

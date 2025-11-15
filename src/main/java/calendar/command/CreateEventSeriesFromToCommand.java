@@ -53,7 +53,7 @@ public class CreateEventSeriesFromToCommand implements CommandInterface {
   @Override
   public boolean execute(CalendarManager manager, ViewInterface view) throws IOException {
     try {
-      // Get current calendar
+      
       Calendar currentCal = manager.getCurrentCalendar();
       if (currentCal == null) {
         view.displayError("No calendar selected. Use 'use calendar --name <name>' first.");
@@ -61,20 +61,20 @@ public class CreateEventSeriesFromToCommand implements CommandInterface {
       }
       CalendarModelInterface model = currentCal.getModel();
 
-      // Parse weekdays
+      
       Weekday[] weekdays = Weekday.parseString(weekdaysString);
       Set<java.time.DayOfWeek> dayOfWeekSet = Weekday.toDayOfWeekSet(weekdays);
 
-      // Parse datetime
+      
       LocalDateTime start = DateTimeParser.parseDateTime(from);
       LocalDateTime end = DateTimeParser.parseDateTime(to);
 
-      // Create template event with series ID
+      
       UUID seriesId = UUID.randomUUID();
       EventInterface template = new Event(subject, start, end, null, null, false,
           UUID.randomUUID(), seriesId);
 
-      // Parse end condition
+      
       LocalDate endDate = null;
       Integer occurrencesCount = null;
       if (usesEndDate) {
@@ -83,7 +83,7 @@ public class CreateEventSeriesFromToCommand implements CommandInterface {
         occurrencesCount = occurrences;
       }
 
-      // Create series
+      
       EventSeries series = new EventSeries(seriesId, template, dayOfWeekSet,
           endDate, occurrencesCount, usesEndDate);
 

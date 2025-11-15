@@ -18,11 +18,16 @@ import java.util.UUID;
  */
 public class Event implements EventInterface {
 
-  // DESIGN CHECK: Model Time Representation
-  // Date and time are represented using java.time.LocalDateTime, which provides
-  // timezone-naive representation ideal for calendar events. We chose LocalDateTime
-  // over ZonedDateTime because calendar events typically don't need timezone handling
-  // unless crossing timezones, and it keeps the model simpler and more portable.
+  /**
+   * Default start hour for all-day events (8:00 AM).
+   */
+  public static final int ALL_DAY_EVENT_START_HOUR = 8;
+
+  /**
+   * Default end hour for all-day events (5:00 PM).
+   */
+  public static final int ALL_DAY_EVENT_END_HOUR = 17;
+
   private final String subject;
   private final LocalDateTime startDateTime;
   private final LocalDateTime endDateTime;
@@ -113,9 +118,8 @@ public class Event implements EventInterface {
 
   @Override
   public boolean isAllDayEvent() {
-    // All-day events are 8am-5pm on the same day
-    LocalTime morning = LocalTime.of(8, 0);
-    LocalTime evening = LocalTime.of(17, 0);
+    LocalTime morning = LocalTime.of(ALL_DAY_EVENT_START_HOUR, 0);
+    LocalTime evening = LocalTime.of(ALL_DAY_EVENT_END_HOUR, 0);
 
     return startDateTime.toLocalDate().equals(endDateTime.toLocalDate())
         && startDateTime.toLocalTime().equals(morning)
@@ -127,7 +131,6 @@ public class Event implements EventInterface {
                                           LocalDateTime newEnd, String newDescription,
                                           String newLocation, Boolean newStatus, UUID newSeriesId) {
 
-    // Use new values if provided, otherwise keep current values
     String updatedSubject = (newSubject != null) ? newSubject : this.subject;
     LocalDateTime updatedStart = (newStart != null) ? newStart : this.startDateTime;
     LocalDateTime updatedEnd = (newEnd != null) ? newEnd : this.endDateTime;
@@ -142,9 +145,8 @@ public class Event implements EventInterface {
         ? Optional.of(newSeriesId)
         : this.seriesId;
 
-    // Create new event with updated fields
     return new Event(updatedSubject, updatedStart, updatedEnd, updatedDescription.orElse(null),
-        updatedLocation.orElse(null), updatedStatus, this.eventId, // Keep same ID
+        updatedLocation.orElse(null), updatedStatus, this.eventId,
         updatedSeriesId.orElse(null));
   }
 

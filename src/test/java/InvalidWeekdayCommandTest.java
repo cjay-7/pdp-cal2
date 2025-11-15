@@ -55,9 +55,9 @@ public class InvalidWeekdayCommandTest {
   }
 
   @Test
-  // TC 27: This test verifies that commands with invalid weekday characters are rejected.
-  // Input: Create series command with invalid weekday 'X'.
-  // Expected: Error message about invalid weekday.
+  
+  
+  
   public void testInvalidWeekdayInSeriesCommand() throws IOException {
     String commands = "create event \"Meeting\" from 2025-06-02T10:00 to 2025-06-02T11:00 "
         + "repeats XYZ for 3 times\nexit\n";
@@ -67,13 +67,13 @@ public class InvalidWeekdayCommandTest {
     controller.run();
 
     String output = outContent.toString();
-    // Should contain error about invalid weekday
+    
     assertTrue("Output should contain error about invalid weekday",
         output.toLowerCase().contains("invalid") || output.toLowerCase().contains("error"));
   }
 
   @Test
-  // TC 27: Additional test - verify Weekday.fromChar throws for invalid character.
+  
   public void testWeekdayFromCharInvalidCharacter() {
     try {
       calendar.model.Weekday.fromChar('X');
@@ -85,7 +85,7 @@ public class InvalidWeekdayCommandTest {
   }
 
   @Test
-  // TC 27: Additional test - verify Weekday.parseString throws for invalid string.
+  
   public void testWeekdayParseStringInvalidCharacter() {
     try {
       calendar.model.Weekday.parseString("MXW");

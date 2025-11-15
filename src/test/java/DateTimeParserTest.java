@@ -25,7 +25,7 @@ public class DateTimeParserTest {
   public void testParseDateVariousDates() {
     assertEquals(LocalDate.of(2025, 1, 1), DateTimeParser.parseDate("2025-01-01"));
     assertEquals(LocalDate.of(2025, 12, 31), DateTimeParser.parseDate("2025-12-31"));
-    assertEquals(LocalDate.of(2024, 2, 29), DateTimeParser.parseDate("2024-02-29")); // Leap year
+    assertEquals(LocalDate.of(2024, 2, 29), DateTimeParser.parseDate("2024-02-29")); 
   }
 
   @Test

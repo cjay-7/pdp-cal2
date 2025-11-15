@@ -41,7 +41,7 @@ public class CsvExporterTest {
         LocalDateTime.of(2025, 6, 1, 11, 0),
         "Hello, \"World\"", "Room, 101", false, UUID.randomUUID(), null);
     String csv = CsvExporter.toCsv(List.of(e));
-    // Field with comma/quotes should be wrapped in quotes and quotes doubled
+    
     assertTrue(csv.contains("\"A, \"\"B\"\"\""));
     assertTrue(csv.contains("\"Hello, \"\"World\"\"\""));
     assertTrue(csv.contains("\"Room, 101\""));

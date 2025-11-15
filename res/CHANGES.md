@@ -4,7 +4,7 @@
 
 This document summarizes the changes made to address HW4 code review feedback and prepare the codebase for HW5 implementation.
 
-**For detailed design rationale and analysis, see [DESIGN.md](./DESIGN.md)**
+**For detailed design rationale and analysis, see [DESIGN.md](DESIGN.md)**
 
 ---
 

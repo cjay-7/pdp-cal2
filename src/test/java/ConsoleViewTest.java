@@ -66,9 +66,9 @@ public class ConsoleViewTest {
   }
 
   @Test
-  // TC 22: This test verifies if the print command displays the expected event details
-  // on a specific date and time. Input: Event "Meeting" 2025-06-01 10:00-11:00.
-  // Expected: Output contains Meeting, 2025-06-01, 10:00, 11:00.
+  
+  
+  
   public void testDisplayEventsSingle() throws IOException {
     EventInterface event = new Event("Meeting",
         LocalDateTime.of(2025, 6, 1, 10, 0),
@@ -94,9 +94,9 @@ public class ConsoleViewTest {
   }
 
   @Test
-  // TC 23: This test verifies if the print command displays the expected event details
-  // for all events within a date and time interval. Input: 2 events on 2025-06-01.
-  // Expected: Both Meeting1 and Meeting2 displayed.
+  
+  
+  
   public void testDisplayEventsMultiple() throws IOException {
     EventInterface event1 = new Event("Meeting1",
         LocalDateTime.of(2025, 6, 1, 10, 0),

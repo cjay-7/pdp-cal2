@@ -53,7 +53,7 @@ public class EditEventsCommandSplitTest {
     EventSeries series = new EventSeries(seriesId, template, weekdays, null, 3, false);
     model.createEventSeries(series);
 
-    // Change Monday 2025-06-02 occurrence start to 08:45 for forward edits
+    
     EditEventsCommand cmd = new EditEventsCommand("start", "Standup",
         "2025-06-02T09:00", "2025-06-02T08:45");
     assertTrue(cmd.execute(manager, new calendar.view.ConsoleView(System.out)));

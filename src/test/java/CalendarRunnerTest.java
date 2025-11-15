@@ -39,7 +39,7 @@ public class CalendarRunnerTest {
     try {
       CalendarRunner.main(new String[]{});
     } catch (SecurityException ignored) {
-      // expected due to intercepted exit
+      return;
     }
     assertTrue(sm.lastStatus == 1);
   }
@@ -52,7 +52,7 @@ public class CalendarRunnerTest {
     try {
       CalendarRunner.main(new String[]{"--mode", "headless"});
     } catch (SecurityException ignored) {
-      // expected due to intercepted exit
+      return;
     }
     assertTrue(sm.lastStatus == 1);
   }
@@ -66,7 +66,7 @@ public class CalendarRunnerTest {
     try {
       System.setIn(new java.io.ByteArrayInputStream("exit\n".getBytes()));
       CalendarRunner.main(new String[]{"--mode", "interactive"});
-      // If we reached here without SecurityException, it returned normally
+      
       assertTrue(true);
     } finally {
       System.setIn(originalIn);
@@ -95,12 +95,12 @@ public class CalendarRunnerTest {
 
     @Override
     public void checkPermission(Permission perm) {
-      // allow
+      
     }
 
     @Override
     public void checkPermission(Permission perm, Object context) {
-      // allow
+      
     }
 
     @Override

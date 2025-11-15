@@ -38,20 +38,20 @@ public class CalendarModelCompleteTest {
     model = new CalendarModel();
   }
 
-  // ========== Event Creation Tests ==========
+  
 
   @Test
-  // TC 5 (closest): This test verifies that single events are uniquely identified.
-  // Note: Full TC 5 testing unique identification is in EventTest.testEqualsSameSubjectStartEnd.
+  
+  
   public void testCreateEventSuccess() {
     EventInterface event = createTestEvent("Meeting", 2025, 6, 1, 10, 0, 11, 0);
     assertTrue(model.createEvent(event));
   }
 
   @Test
-  // TC 12: This test verifies the behavior when two single events with the same
-  // identifying parameters are created. Input: Same event created twice.
-  // Expected: First succeeds, second returns false (duplicate).
+  
+  
+  
   public void testCreateEventDuplicate() {
     EventInterface event = createTestEvent("Meeting", 2025, 6, 1, 10, 0, 11, 0);
     assertTrue(model.createEvent(event));
@@ -79,11 +79,11 @@ public class CalendarModelCompleteTest {
     model.createEvent(null);
   }
 
-  // ========== Event Series Creation Tests ==========
+  
 
   @Test
-  // TC 7: This test verifies that no events in a series span more than one day.
-  // Input: Series with events from 9:00-10:00. Expected: All events start and end on same date.
+  
+  
   public void testSeriesEventsDoNotSpanMultipleDays() {
     EventInterface template = createTestEvent("Daily Meeting", 2025, 6, 2, 9, 0, 10, 0);
     UUID seriesId = UUID.randomUUID();
@@ -98,7 +98,7 @@ public class CalendarModelCompleteTest {
     List<EventInterface> events = model.getAllEvents();
     for (EventInterface event : events) {
       if (event.getSubject().equals("Daily Meeting")) {
-        // Verify each event starts and ends on the same day
+        
         LocalDate startDate = event.getStartDateTime().toLocalDate();
         LocalDate endDate = event.getEndDateTime().toLocalDate();
         assertTrue("Event should not span multiple days - starts on " + startDate
@@ -108,10 +108,10 @@ public class CalendarModelCompleteTest {
   }
 
   @Test
-  // TC 6, TC 8, TC 10 (combination): This test verifies that a recurring event is created
-  // and repeats for N occurrences (TC 8), that all events have the same start time (TC 6),
-  // and that events repeat on expected weekdays (TC 10). Input: M,W for 5 times.
-  // Expected: 5 occurrences on Mondays and Wednesdays at 9:00.
+  
+  
+  
+  
   public void testCreateEventSeriesWithOccurrences() {
     EventInterface template = createTestEvent("Standup", 2025, 6, 2, 9, 0, 9, 30);
     UUID seriesId = UUID.randomUUID();
@@ -127,10 +127,10 @@ public class CalendarModelCompleteTest {
         .filter(e -> e.getSubject().equals("Standup"))
         .collect(java.util.stream.Collectors.toList());
 
-    // TC 8: Verify 5 occurrences
+    
     assertEquals("Should have 5 occurrences", 5, standupEvents.size());
 
-    // TC 6: Verify all events have the same start and end TIME (9:00-9:30)
+    
     for (EventInterface event : standupEvents) {
       assertEquals("All events should start at 9:00", 9, event.getStartDateTime().getHour());
       assertEquals("All events should start at 0 minutes", 0, event.getStartDateTime().getMinute());
@@ -138,7 +138,7 @@ public class CalendarModelCompleteTest {
       assertEquals("All events should end at 30 minutes", 30, event.getEndDateTime().getMinute());
     }
 
-    // TC 10: Verify events occur on correct weekdays (Monday and Wednesday only)
+    
     for (EventInterface event : standupEvents) {
       DayOfWeek day = event.getStartDateTime().getDayOfWeek();
       assertTrue("Event should be on Monday or Wednesday",
@@ -147,9 +147,9 @@ public class CalendarModelCompleteTest {
   }
 
   @Test
-  // TC 9: This test verifies that a recurring event is created and repeats until a
-  // specific date and time. Input: Tuesdays until 2025-06-30. Expected: multiple
-  // occurrences on Tuesdays up to end date.
+  
+  
+  
   public void testCreateEventSeriesWithEndDate() {
     EventInterface template = createTestEvent("Weekly Sync", 2025, 6, 3, 14, 0, 15, 0);
     UUID seriesId = UUID.randomUUID();
@@ -168,9 +168,9 @@ public class CalendarModelCompleteTest {
   }
 
   @Test
-  // TC 13: This test verifies the behavior when two series events with the same
-  // identifying parameters are created. Input: Same series created twice.
-  // Expected: First succeeds, second returns false (duplicate).
+  
+  
+  
   public void testCreateEventSeriesDuplicate() {
     EventInterface template = createTestEvent("Standup", 2025, 6, 2, 9, 0, 9, 30);
     UUID seriesId = UUID.randomUUID();
@@ -180,7 +180,7 @@ public class CalendarModelCompleteTest {
     EventSeries series = new EventSeries(seriesId, template, weekdays, null, 3, false);
     assertTrue(model.createEventSeries(series));
 
-    // Try to create same series again
+    
     EventSeries duplicate = new EventSeries(seriesId, template, weekdays, null, 3, false);
     assertFalse("Should not create duplicate series", model.createEventSeries(duplicate));
   }
@@ -190,7 +190,7 @@ public class CalendarModelCompleteTest {
     model.createEventSeries(null);
   }
 
-  // ========== Edit Event Tests ==========
+  
 
   @Test
   public void testEditEventSubject() {
@@ -273,7 +273,7 @@ public class CalendarModelCompleteTest {
     model.createEvent(event1);
     model.createEvent(event2);
 
-    // Try to edit event2 to match event1 (duplicate)
+    
     EditSpec spec = new EditSpec("Meeting",
         LocalDateTime.of(2025, 6, 1, 10, 0),
         LocalDateTime.of(2025, 6, 1, 11, 0),
@@ -301,7 +301,7 @@ public class CalendarModelCompleteTest {
     model.editEvent(event.getId(), null);
   }
 
-  // ========== Edit Series Tests ==========
+  
 
   @Test
   public void testEditSeriesFrom() {
@@ -362,9 +362,9 @@ public class CalendarModelCompleteTest {
   }
 
   @Test
-  // TC 17: This test verifies that editing the start time of an event in a series
-  // removes the event from that series. Input: Edit start time for events from 2025-06-09.
-  // Expected: Edit succeeds and series ID is removed from affected events.
+  
+  
+  
   public void testEditSeriesFromWithStartTimeChange() {
     EventInterface template = createTestEvent("Standup", 2025, 6, 2, 9, 0, 9, 30);
     UUID seriesId = UUID.randomUUID();
@@ -379,24 +379,24 @@ public class CalendarModelCompleteTest {
     EditSpec spec = new EditSpec(null, newStart, null, null, null, null);
     assertTrue(model.editSeriesFrom(seriesId, fromDate, spec));
 
-    // Verify that events from 2025-06-09 forward no longer have the series ID
+    
     List<EventInterface> events = model.getAllEvents();
     for (EventInterface event : events) {
       if (event.getSubject().equals("Standup")
           && !event.getStartDateTime().toLocalDate().isBefore(fromDate)) {
-        // Events from 2025-06-09 forward should not have the series ID
+        
         assertFalse("Event should not have series ID after start time edit",
             event.getSeriesId().isPresent());
       }
     }
   }
 
-  // ========== Query Tests ==========
+  
 
   @Test
-  // TC 19: This test verifies that the calendar can be queried for all events on
-  // a specific day. Input: Query events on 2025-06-10 with 2 events.
-  // Expected: 2 events returned in chronological order.
+  
+  
+  
   public void testGetEventsOnDate() {
     LocalDate date = LocalDate.of(2025, 6, 10);
     EventInterface event1 = new Event("Morning",
@@ -436,9 +436,9 @@ public class CalendarModelCompleteTest {
   }
 
   @Test
-  // TC 20: This test verifies that the calendar can be queried for all events
-  // in a date and time range. Input: Range 2025-06-10 to 2025-06-12, 1 overlapping event.
-  // Expected: Only Event2 returned.
+  
+  
+  
   public void testGetEventsInRange() {
     LocalDateTime rangeStart = LocalDateTime.of(2025, 6, 10, 0, 0);
     LocalDateTime rangeEnd = LocalDateTime.of(2025, 6, 12, 23, 59);
@@ -457,9 +457,9 @@ public class CalendarModelCompleteTest {
   }
 
   @Test
-  // TC 24: This test verifies if the print command displays the expected event details
-  // for all events partially within a date and time interval. Input: Event 2025-06-09
-  // to 2025-06-11, query 2025-06-10. Expected: Event included due to overlap.
+  
+  
+  
   public void testGetEventsInRangeOverlapping() {
     EventInterface event = new Event("Long Event",
         LocalDateTime.of(2025, 6, 9, 10, 0),
@@ -481,14 +481,14 @@ public class CalendarModelCompleteTest {
 
     List<EventInterface> events = model.getAllEvents();
     assertEquals(3, events.size());
-    // Should be sorted by start time
+    
     assertTrue(events.get(0).getStartDateTime().isBefore(events.get(1).getStartDateTime()));
   }
 
   @Test
-  // TC 21: This test verifies if the calendar is asked whether the user is busy
-  // on a specific date and time. Input: Event 10:00-11:00, test 10:30/09:00/12:00/10:00.
-  // Expected: Busy at 10:30 and 10:00, not busy at 09:00 and 12:00.
+  
+  
+  
   public void testIsBusy() {
     EventInterface event = createTestEvent("Meeting", 2025, 6, 10, 10, 0, 11, 0);
     model.createEvent(event);
@@ -513,7 +513,7 @@ public class CalendarModelCompleteTest {
     assertTrue(model.isBusy(LocalDateTime.of(2025, 6, 10, 14, 30)));
   }
 
-  // ========== Find Tests ==========
+  
 
   @Test
   public void testFindEventById() {
@@ -565,13 +565,13 @@ public class CalendarModelCompleteTest {
         LocalDateTime.of(2025, 6, 1, 11, 0));
   }
 
-  // ========== Export Tests ==========
+  
 
   @Test
-  // TC 28: This test verifies that the exported CSV file is valid, i.e., has all the
-  // fields required to export to a calendar app such as Google Calendar. Input: 2 events.
-  // Expected: CSV file exists with proper headers (Subject, Start Date, Start Time, End Date,
-  // End Time, All Day Event, Description, Location, Private) and event data.
+  
+  
+  
+  
   public void testExportToCsv() throws IOException {
     model.createEvent(createTestEvent("Event1", 2025, 6, 1, 10, 0, 11, 0));
     model.createEvent(createTestEvent("Event2", 2025, 6, 2, 14, 0, 15, 0));
@@ -615,7 +615,7 @@ public class CalendarModelCompleteTest {
     model.isBusy(null);
   }
 
-  // Helper method
+  
   private EventInterface createTestEvent(String subject, int year, int month, int day,
                                          int startHour, int startMin, int endHour, int endMin) {
     LocalDateTime start = LocalDateTime.of(year, month, day, startHour, startMin);

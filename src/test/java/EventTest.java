@@ -17,7 +17,7 @@ import org.junit.Test;
  */
 public class EventTest {
 
-  // Helper method to create a standard test event
+  
   private Event createTestEvent() {
     LocalDateTime start = LocalDateTime.of(2025, 5, 5, 10, 0);
     LocalDateTime end = LocalDateTime.of(2025, 5, 5, 11, 0);
@@ -26,12 +26,12 @@ public class EventTest {
         "Test description", "Room 101", false, id, null);
   }
 
-  // ========== Creation Tests ==========
+  
 
   @Test
-  // TC 11: This test verifies that a single event is created with the required
-  // parameters (subject, start, end) and optional parameters (description, location, private).
-  // Input: All fields set. Expected: Event created with all values correct.
+  
+  
+  
   public void testEventCreation() {
     Event event = createTestEvent();
 
@@ -76,7 +76,7 @@ public class EventTest {
     assertEquals(seriesId, event.getSeriesId().get());
   }
 
-  // ========== Validation Tests ==========
+  
 
   @Test(expected = NullPointerException.class)
   public void testNullSubject() {
@@ -122,9 +122,9 @@ public class EventTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  // TC 26 (closest): This test verifies that end time cannot be before start time.
-  // While not specifically for commands, the same validation applies to all event creation.
-  // Input: End time 10:00 before start 11:00. Expected: IllegalArgumentException.
+  
+  
+  
   public void testEndTimeBeforeStart() {
     LocalDateTime start = LocalDateTime.of(2025, 5, 5, 11, 0);
     LocalDateTime end = LocalDateTime.of(2025, 5, 5, 10, 0);
@@ -159,7 +159,7 @@ public class EventTest {
     assertEquals("Meeting", event.getSubject());
   }
 
-  // ========== All-Day Event Tests ==========
+  
 
   @Test
   public void testAllDayEvent() {
@@ -182,10 +182,10 @@ public class EventTest {
   }
 
   @Test
-  // TC 7: This test verifies that no events in a series span more than one day time.
-  // While this is specifically for series, the same logic applies: multi-day events
-  // are not considered all-day events. Input: Event spanning 2025-05-05 to 2025-05-06.
-  // Expected: Not an all-day event.
+  
+  
+  
+  
   public void testNotAllDayEventSpanningDays() {
     LocalDateTime start = LocalDateTime.of(2025, 5, 5, 8, 0);
     LocalDateTime end = LocalDateTime.of(2025, 5, 6, 17, 0);
@@ -205,7 +205,7 @@ public class EventTest {
     assertFalse(event.isAllDayEvent());
   }
 
-  // ========== Equals and HashCode Tests ==========
+  
 
   @Test
   public void testEqualsSameSubjectStartEnd() {
@@ -219,7 +219,7 @@ public class EventTest {
     Event event2 = new Event("Meeting", start2, end2,
         "Desc2", "Loc2", false, UUID.randomUUID(), null);
 
-    // Should be equal because subject, start, and end match
+    
     assertEquals(event1, event2);
     assertEquals(event1.hashCode(), event2.hashCode());
   }
@@ -297,7 +297,7 @@ public class EventTest {
     assertNotEquals(event, "Not an event");
   }
 
-  // ========== withModifications Tests ==========
+  
 
   @Test
   public void testModifySubject() {
@@ -433,17 +433,17 @@ public class EventTest {
     Event original = new Event("Meeting", start, end,
         null, null, false, UUID.randomUUID(), seriesId);
 
-    // Set seriesId to null to remove it
+    
     EventInterface modified = original.withModifications(null, null, null,
         null, null, null, null);
 
-    // When passing null, it should keep the original seriesId
-    // Actually, looking at the implementation, null keeps current
-    // To remove, we'd need a different approach, but for now test keeps it
+    
+    
+    
     assertEquals(original.getSeriesId(), modified.getSeriesId());
   }
 
-  // ========== Edge Cases ==========
+  
 
   @Test
   public void testEventSpanningMultipleDays() {

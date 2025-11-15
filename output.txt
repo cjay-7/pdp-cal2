@@ -1,0 +1,42 @@
+Calendar 'Work' created successfully with timezone America/New_York.
+Calendar 'Personal' created successfully with timezone America/Los_Angeles.
+Calendar 'School' created successfully with timezone America/Chicago.
+Now using calendar 'Work'.
+Created event: Team Meeting
+Created all-day event: Lunch Break
+Created event: Code Review
+Created event series: Daily Standup
+Created event series: Weekly Sync
+Created all-day event series: Training
+Now using calendar 'Personal'.
+Created event: Dentist Appointment
+Created event: Gym Session
+Created all-day event: Grocery Shopping
+Now using calendar 'Work'.
+- Lunch Break starting on 2025-01-15 at 08:00, ending on 2025-01-15 at 17:00
+- Team Meeting starting on 2025-01-15 at 09:00, ending on 2025-01-15 at 10:00
+- Code Review starting on 2025-01-15 at 14:00, ending on 2025-01-15 at 15:00
+- Daily Standup starting on 2025-01-17 at 09:00, ending on 2025-01-17 at 09:15
+- Daily Standup starting on 2025-01-20 at 09:00, ending on 2025-01-20 at 09:15
+- Weekly Sync starting on 2025-01-21 at 15:00, ending on 2025-01-21 at 16:00
+- Daily Standup starting on 2025-01-22 at 09:00, ending on 2025-01-22 at 09:15
+- Training starting on 2025-01-23 at 08:00, ending on 2025-01-23 at 17:00
+- Daily Standup starting on 2025-01-24 at 09:00, ending on 2025-01-24 at 09:15
+- Daily Standup starting on 2025-01-27 at 09:00, ending on 2025-01-27 at 09:15
+- Weekly Sync starting on 2025-01-28 at 15:00, ending on 2025-01-28 at 16:00
+- Training starting on 2025-01-30 at 08:00, ending on 2025-01-30 at 17:00
+- Weekly Sync starting on 2025-02-04 at 15:00, ending on 2025-02-04 at 16:00
+- Training starting on 2025-02-06 at 08:00, ending on 2025-02-06 at 17:00
+- Weekly Sync starting on 2025-02-11 at 15:00, ending on 2025-02-11 at 16:00
+- Weekly Sync starting on 2025-02-18 at 15:00, ending on 2025-02-18 at 16:00
+- Weekly Sync starting on 2025-02-25 at 15:00, ending on 2025-02-25 at 16:00
+No events found.
+- Lunch Break starting on 2025-01-15 at 08:00, ending on 2025-01-15 at 17:00
+- Team Meeting starting on 2025-01-15 at 09:00, ending on 2025-01-15 at 10:00
+- Code Review starting on 2025-01-15 at 14:00, ending on 2025-01-15 at 15:00
+- Daily Standup starting on 2025-01-17 at 09:00, ending on 2025-01-17 at 09:15
+- Daily Standup starting on 2025-01-20 at 09:00, ending on 2025-01-20 at 09:15
+available
+Event edited successfully
+Events edited successfully
+ERROR: Event not found: Weekly Sync at 2025-01-17T15:00

@@ -57,7 +57,7 @@ public class EditCalendarCommand implements CommandInterface {
         break;
 
       case "timezone":
-        // Validate timezone format
+        
         try {
           ZoneId zoneId = ZoneId.of(newValue);
           success = manager.editCalendarTimezone(calendarName, zoneId);

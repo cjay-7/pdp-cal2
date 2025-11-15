@@ -52,7 +52,7 @@ public class CopyEventsOnDayCommand implements CommandInterface {
 
   @Override
   public boolean execute(CalendarManager manager, ViewInterface view) throws IOException {
-    // Check current calendar exists
+    
     Calendar sourceCalendar = manager.getCurrentCalendar();
     if (sourceCalendar == null) {
       view.displayMessage("Error: No calendar is currently in use. "
@@ -60,14 +60,14 @@ public class CopyEventsOnDayCommand implements CommandInterface {
       return false;
     }
 
-    // Check target calendar exists
+    
     Calendar targetCalendar = manager.getCalendar(targetCalendarName);
     if (targetCalendar == null) {
       view.displayMessage("Error: Target calendar '" + targetCalendarName + "' not found.");
       return false;
     }
 
-    // Parse dates
+    
     LocalDate sourceLocalDate;
     LocalDate targetLocalDate;
     try {
@@ -78,7 +78,7 @@ public class CopyEventsOnDayCommand implements CommandInterface {
       return false;
     }
 
-    // Find all events on source date
+    
     List<EventInterface> allEvents = sourceCalendar.getModel().getAllEvents();
     List<EventInterface> eventsOnDay = new ArrayList<>();
     for (EventInterface event : allEvents) {
@@ -93,16 +93,16 @@ public class CopyEventsOnDayCommand implements CommandInterface {
       return false;
     }
 
-    // Copy each event, converting timezone
+    
     int copiedCount = 0;
     int failedCount = 0;
 
     for (EventInterface sourceEvent : eventsOnDay) {
-      // Calculate time offset from start of day
+      
       LocalDateTime sourceStart = sourceEvent.getStartDateTime();
       LocalDateTime sourceEnd = sourceEvent.getEndDateTime();
 
-      // Convert times to target timezone
+      
       LocalDateTime targetStart = TimezoneUtils.convertTimezone(
           sourceStart,
           sourceCalendar.getTimezone(),
@@ -115,7 +115,7 @@ public class CopyEventsOnDayCommand implements CommandInterface {
           targetCalendar.getTimezone()
       );
 
-      // Adjust to target date (preserve time of day in target timezone)
+      
       int daysDiff = (int) java.time.temporal.ChronoUnit.DAYS.between(
           sourceStart.toLocalDate(),
           targetLocalDate
@@ -124,7 +124,7 @@ public class CopyEventsOnDayCommand implements CommandInterface {
       targetStart = targetStart.plusDays(daysDiff);
       targetEnd = targetEnd.plusDays(daysDiff);
 
-      // Create the new event
+      
       calendar.model.Event newEvent = new calendar.model.Event(
           sourceEvent.getSubject(),
           targetStart,
@@ -132,8 +132,8 @@ public class CopyEventsOnDayCommand implements CommandInterface {
           sourceEvent.getDescription().orElse(null),
           sourceEvent.getLocation().orElse(null),
           sourceEvent.isPrivate(),
-          java.util.UUID.randomUUID(),  // New event ID
-          null  // Not part of a series (could preserve if needed)
+          java.util.UUID.randomUUID(),  
+          null  
       );
 
       if (targetCalendar.getModel().createEvent(newEvent)) {

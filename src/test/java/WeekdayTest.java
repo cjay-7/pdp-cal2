@@ -60,8 +60,8 @@ public class WeekdayTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  // TC 27: This test verifies that invalid characters for weekdays are not allowed.
-  // Input: Character 'X'. Expected: IllegalArgumentException.
+  
+  
   public void testFromCharInvalid() {
     Weekday.fromChar('X');
   }

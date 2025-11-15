@@ -32,6 +32,6 @@ public class NoOpCommand implements CommandInterface {
     if (input != null && !input.trim().isEmpty()) {
       throw new InvalidCommandException("Invalid command: " + input);
     }
-    return true; // Empty line, continue
+    return true;
   }
 }

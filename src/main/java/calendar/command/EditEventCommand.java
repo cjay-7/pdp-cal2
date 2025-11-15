@@ -5,8 +5,8 @@ import calendar.model.CalendarManager;
 import calendar.model.CalendarModelInterface;
 import calendar.model.EditSpec;
 import calendar.model.EventInterface;
-import calendar.model.EventStatus;
 import calendar.util.DateTimeParser;
+import calendar.util.EditSpecFactory;
 import calendar.view.ViewInterface;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -43,7 +43,6 @@ public class EditEventCommand implements CommandInterface {
   @Override
   public boolean execute(CalendarManager manager, ViewInterface view) throws IOException {
     try {
-      // Get current calendar
       Calendar currentCal = manager.getCurrentCalendar();
       if (currentCal == null) {
         view.displayError("No calendar selected. Use 'use calendar --name <name>' first.");
@@ -51,7 +50,7 @@ public class EditEventCommand implements CommandInterface {
       }
       CalendarModelInterface model = currentCal.getModel();
 
-      // Find the event
+      
       LocalDateTime start = DateTimeParser.parseDateTime(startString);
       LocalDateTime end = DateTimeParser.parseDateTime(endString);
       EventInterface event = model.findEventByProperties(subject, start, end);
@@ -61,10 +60,10 @@ public class EditEventCommand implements CommandInterface {
         return false;
       }
 
-      // Create EditSpec based on property (may throw IllegalArgumentException)
-      EditSpec spec = createEditSpec(property, newValue);
 
-      // Edit the event
+      EditSpec spec = EditSpecFactory.createEditSpec(property, newValue);
+
+
       boolean success = model.editEvent(event.getId(), spec);
       if (success) {
         view.displayMessage("Event edited successfully");
@@ -73,40 +72,11 @@ public class EditEventCommand implements CommandInterface {
       }
       return success;
     } catch (IllegalArgumentException e) {
-      // Propagate IllegalArgumentException for invalid properties
+
       throw e;
     } catch (Exception e) {
       view.displayError("Failed to edit event: " + e.getMessage());
       return false;
-    }
-  }
-
-  /**
-   * Creates an EditSpec for the given property and value.
-   *
-   * @param property the property name
-   * @param value    the new value
-   * @return EditSpec with only the specified property set
-   */
-  private EditSpec createEditSpec(String property, String value) {
-    switch (property) {
-      case "subject":
-        return new EditSpec(value, null, null, null, null, null);
-      case "start":
-        LocalDateTime newStart = DateTimeParser.parseDateTime(value);
-        return new EditSpec(null, newStart, null, null, null, null);
-      case "end":
-        LocalDateTime newEnd = DateTimeParser.parseDateTime(value);
-        return new EditSpec(null, null, newEnd, null, null, null);
-      case "description":
-        return new EditSpec(null, null, null, value, null, null);
-      case "location":
-        return new EditSpec(null, null, null, null, value, null);
-      case "status":
-        EventStatus status = EventStatus.fromString(value);
-        return new EditSpec(null, null, null, null, null, status);
-      default:
-        throw new IllegalArgumentException("Invalid property: " + property);
     }
   }
 }

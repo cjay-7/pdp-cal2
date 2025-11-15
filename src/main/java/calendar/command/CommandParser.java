@@ -40,34 +40,26 @@ public class CommandParser {
    * Matchers are ordered from most specific to least specific.
    */
   public CommandParser() {
-    // Order matters: more specific patterns must come before less specific ones
     this.matchers = Arrays.asList(
         new ExitCommandMatcher(),
-        // HW5: Calendar management commands
         new CreateCalendarCommandMatcher(),
         new EditCalendarCommandMatcher(),
         new UseCalendarCommandMatcher(),
-        // HW5: Copy commands (most specific to least specific)
-        new CopyEventsRangeCommandMatcher(),   // "copy events between ... and ..."
-        new CopyEventsOnDayCommandMatcher(),   // "copy events on ..."
-        new CopyEventCommandMatcher(),         // "copy event ..."
-        // Query commands
+        new CopyEventsRangeCommandMatcher(),
+        new CopyEventsOnDayCommandMatcher(),
+        new CopyEventCommandMatcher(),
         new PrintAllEventsCommandMatcher(),
         new PrintEventsOnCommandMatcher(),
         new PrintEventsRangeCommandMatcher(),
         new ShowStatusCommandMatcher(),
-        // Edit commands (more specific before less specific)
         new EditEventCommandMatcher(),
         new EditEventsCommandMatcher(),
         new EditSeriesCommandMatcher(),
-        // Export command
         new ExportCommandMatcher(),
-        // Event creation: Series patterns before simple patterns (more specific)
         new CreateEventSeriesFromToForCommandMatcher(),
         new CreateEventSeriesFromToUntilCommandMatcher(),
         new CreateAllDayEventSeriesForCommandMatcher(),
         new CreateAllDayEventSeriesUntilCommandMatcher(),
-        // Simple event creation patterns last
         new CreateAllDayEventCommandMatcher(),
         new CreateEventCommandMatcher()
     );
@@ -81,12 +73,11 @@ public class CommandParser {
    */
   public CommandInterface parse(String input) {
     if (input == null || input.trim().isEmpty()) {
-      return new NoOpCommand(); // Empty input, silent
+      return new NoOpCommand();
     }
 
     String trimmed = input.trim();
 
-    // Try each matcher in the chain
     for (CommandMatcher matcher : matchers) {
       CommandInterface command = matcher.tryMatch(trimmed);
       if (command != null) {
@@ -94,7 +85,6 @@ public class CommandParser {
       }
     }
 
-    // No matcher succeeded - unrecognized command
     return new NoOpCommand(input);
   }
 }

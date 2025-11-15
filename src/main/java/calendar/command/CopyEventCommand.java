@@ -59,7 +59,6 @@ public class CopyEventCommand implements CommandInterface {
 
   @Override
   public boolean execute(CalendarManager manager, ViewInterface view) throws IOException {
-    // Check current calendar exists
     Calendar sourceCalendar = manager.getCurrentCalendar();
     if (sourceCalendar == null) {
       view.displayMessage("Error: No calendar is currently in use. "
@@ -67,14 +66,12 @@ public class CopyEventCommand implements CommandInterface {
       return false;
     }
 
-    // Check target calendar exists
     Calendar targetCalendar = manager.getCalendar(targetCalendarName);
     if (targetCalendar == null) {
       view.displayMessage("Error: Target calendar '" + targetCalendarName + "' not found.");
       return false;
     }
 
-    // Parse source date/time
     LocalDateTime sourceStart;
     try {
       sourceStart = LocalDateTime.parse(sourceDateTime, DATE_TIME_FORMATTER);
@@ -83,7 +80,6 @@ public class CopyEventCommand implements CommandInterface {
       return false;
     }
 
-    // Parse target date/time
     LocalDateTime targetStart;
     try {
       targetStart = LocalDateTime.parse(targetDateTime, DATE_TIME_FORMATTER);
@@ -92,7 +88,6 @@ public class CopyEventCommand implements CommandInterface {
       return false;
     }
 
-    // Find the event in source calendar
     List<EventInterface> events = sourceCalendar.getModel().getAllEvents();
     EventInterface sourceEvent = null;
     for (EventInterface event : events) {
@@ -109,16 +104,16 @@ public class CopyEventCommand implements CommandInterface {
       return false;
     }
 
-    // Calculate duration
+    
     long durationMinutes = java.time.Duration.between(
         sourceEvent.getStartDateTime(),
         sourceEvent.getEndDateTime()
     ).toMinutes();
 
-    // Calculate new end time in target timezone
+    
     LocalDateTime targetEnd = targetStart.plusMinutes(durationMinutes);
 
-    // Create the new event in target calendar
+    
     calendar.model.Event newEvent = new calendar.model.Event(
         sourceEvent.getSubject(),
         targetStart,
@@ -126,8 +121,8 @@ public class CopyEventCommand implements CommandInterface {
         sourceEvent.getDescription().orElse(null),
         sourceEvent.getLocation().orElse(null),
         sourceEvent.isPrivate(),
-        java.util.UUID.randomUUID(),  // New event ID
-        null  // Not part of a series
+        java.util.UUID.randomUUID(),  
+        null  
     );
 
     boolean success = targetCalendar.getModel().createEvent(newEvent);

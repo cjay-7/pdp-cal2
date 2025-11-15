@@ -50,7 +50,7 @@ public class CalendarManager {
       throw new IllegalArgumentException("Calendar timezone cannot be null");
     }
 
-    // Check for duplicate name (case-insensitive)
+    
     if (calendarExists(name)) {
       return false;
     }
@@ -117,12 +117,12 @@ public class CalendarManager {
       return false;
     }
 
-    // Check if new name already exists (case-insensitive), but allow same name
+    
     if (!oldName.equals(newName) && calendarExists(newName)) {
       return false;
     }
 
-    // Remove old mapping and add new one
+    
     calendars.remove(oldName);
     calendar.setName(newName);
     calendars.put(newName, calendar);

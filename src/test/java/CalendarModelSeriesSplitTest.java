@@ -47,14 +47,14 @@ public class CalendarModelSeriesSplitTest {
     EventSeries series = new EventSeries(seriesId, template, weekdays, null, 3, false);
     model.createEventSeries(series);
 
-    // Change start time from date 2025-06-04 forward (Wednesday occurrence)
+    
     LocalDate fromDate = LocalDate.of(2025, 6, 4);
     LocalDateTime newStart = LocalDateTime.of(2025, 6, 4, 8, 45);
     EditSpec spec = new EditSpec(null, newStart, null, null, null, null);
 
     assertTrue(model.editSeriesFrom(seriesId, fromDate, spec));
 
-    // Verify modified occurrence uses 8:45 on its own date
+    
     List<EventInterface> eventsOnFrom = model.getEventsOnDate(fromDate);
     assertTrue(eventsOnFrom.stream().anyMatch(e -> e.getSubject().equals("Standup")
         && e.getStartDateTime().toLocalTime().getHour() == 8
@@ -80,7 +80,7 @@ public class CalendarModelSeriesSplitTest {
     EditSpec spec = new EditSpec(null, newStart, null, null, null, null);
     assertTrue(model.editEntireSeries(seriesId, spec));
 
-    // Both occurrences should be at 9:30 on their dates
+    
     List<EventInterface> events = model.getAllEvents();
     long count = events.stream().filter(e -> e.getSubject().equals("Daily")
         && e.getStartDateTime().toLocalTime().getHour() == 9

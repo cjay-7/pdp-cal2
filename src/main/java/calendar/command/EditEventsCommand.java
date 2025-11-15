@@ -5,8 +5,8 @@ import calendar.model.CalendarManager;
 import calendar.model.CalendarModelInterface;
 import calendar.model.EditSpec;
 import calendar.model.EventInterface;
-import calendar.model.EventStatus;
 import calendar.util.DateTimeParser;
+import calendar.util.EditSpecFactory;
 import calendar.view.ViewInterface;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -41,7 +41,7 @@ public class EditEventsCommand implements CommandInterface {
   @Override
   public boolean execute(CalendarManager manager, ViewInterface view) throws IOException {
     try {
-      // Get current calendar
+      
       Calendar currentCal = manager.getCurrentCalendar();
       if (currentCal == null) {
         view.displayError("No calendar selected. Use 'use calendar --name <name>' first.");
@@ -49,11 +49,11 @@ public class EditEventsCommand implements CommandInterface {
       }
       CalendarModelInterface model = currentCal.getModel();
 
-      // Find the event by subject and start time
+      
       LocalDateTime start = DateTimeParser.parseDateTime(startString);
       LocalDate date = start.toLocalDate();
 
-      // Get all events on that date and find matching one by subject and start time
+      
       EventInterface event = model.getEventsOnDate(date).stream()
           .filter(e -> e.getSubject().equals(subject)
               && e.getStartDateTime().equals(start))
@@ -65,19 +65,19 @@ public class EditEventsCommand implements CommandInterface {
         return false;
       }
 
-      // Get the from date
+      
       LocalDate fromDate = start.toLocalDate();
 
-      // Create EditSpec
-      EditSpec spec = createEditSpec(property, newValue);
 
-      // Edit the series from this date forward
+      EditSpec spec = EditSpecFactory.createEditSpec(property, newValue);
+
+
       boolean success;
       if (event.getSeriesId().isPresent()) {
         UUID seriesId = event.getSeriesId().get();
         success = model.editSeriesFrom(seriesId, fromDate, spec);
       } else {
-        // Not a series, treat as single event
+
         success = model.editEvent(event.getId(), spec);
       }
 
@@ -92,31 +92,6 @@ public class EditEventsCommand implements CommandInterface {
     } catch (Exception e) {
       view.displayError("Failed to edit events: " + e.getMessage());
       return false;
-    }
-  }
-
-  /**
-   * Creates an EditSpec for the given property and value.
-   */
-  private EditSpec createEditSpec(String property, String value) {
-    switch (property) {
-      case "subject":
-        return new EditSpec(value, null, null, null, null, null);
-      case "start":
-        LocalDateTime newStart = DateTimeParser.parseDateTime(value);
-        return new EditSpec(null, newStart, null, null, null, null);
-      case "end":
-        LocalDateTime newEnd = DateTimeParser.parseDateTime(value);
-        return new EditSpec(null, null, newEnd, null, null, null);
-      case "description":
-        return new EditSpec(null, null, null, value, null, null);
-      case "location":
-        return new EditSpec(null, null, null, null, value, null);
-      case "status":
-        EventStatus status = EventStatus.fromString(value);
-        return new EditSpec(null, null, null, null, null, status);
-      default:
-        throw new IllegalArgumentException("Invalid property: " + property);
     }
   }
 }

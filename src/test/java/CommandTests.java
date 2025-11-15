@@ -43,7 +43,7 @@ import org.junit.Test;
  */
 public class CommandTests {
   private CalendarManager manager;
-  private CalendarModelInterface model;  // Direct access to model for assertions
+  private CalendarModelInterface model;  
   private ViewInterface view;
   private ByteArrayOutputStream outContent;
 
@@ -52,12 +52,12 @@ public class CommandTests {
    */
   @Before
   public void setUp() {
-    // Create CalendarManager and set up a default calendar
+    
     manager = new CalendarManager();
     manager.createCalendar("TestCalendar", ZoneId.of("America/New_York"));
     manager.setCurrentCalendar("TestCalendar");
 
-    // Get direct access to the model for assertions
+    
     model = manager.getCurrentCalendar().getModel();
 
     outContent = new ByteArrayOutputStream();
@@ -73,7 +73,7 @@ public class CommandTests {
     System.setOut(System.out);
   }
 
-  // ========== CreateEventCommand Tests ==========
+  
 
   /**
    * Verifies creating a standard timed event succeeds.
@@ -85,7 +85,7 @@ public class CommandTests {
         "2025-06-01T09:00", "2025-06-01T10:00");
     assertTrue(cmd.execute(manager, view));
 
-    // Verify the event was actually created with correct properties
+    
     EventInterface createdEvent = model.findEventByProperties("Meeting",
         LocalDateTime.of(2025, 6, 1, 9, 0),
         LocalDateTime.of(2025, 6, 1, 10, 0));
@@ -105,18 +105,18 @@ public class CommandTests {
     CreateEventCommand cmd = new CreateEventCommand("Meeting",
         "2025-06-01T09:00", "2025-06-01T10:00");
     cmd.execute(manager, view);
-    assertFalse(cmd.execute(manager, view)); // Duplicate
+    assertFalse(cmd.execute(manager, view)); 
   }
 
-  // ========== CreateAllDayEventCommand Tests ==========
+  
 
   @Test
-  // TC 4: This test verifies that a single ALL DAY event is created with the required parameters.
+  
   public void testCreateAllDayEventCommand() throws IOException {
     CreateAllDayEventCommand cmd = new CreateAllDayEventCommand("Holiday", "2025-06-01");
     assertTrue(cmd.execute(manager, view));
 
-    // Verify the event was created and is an all-day event (8:00-17:00)
+    
     EventInterface createdEvent = model.findEventByProperties("Holiday",
         LocalDateTime.of(2025, 6, 1, 8, 0),
         LocalDateTime.of(2025, 6, 1, 17, 0));
@@ -128,7 +128,7 @@ public class CommandTests {
         createdEvent.getEndDateTime().toLocalTime().equals(java.time.LocalTime.of(17, 0)));
   }
 
-  // ========== PrintAllEventsCommand Tests ==========
+  
 
   @Test
   public void testPrintAllEventsCommandEmpty() throws IOException {
@@ -146,7 +146,7 @@ public class CommandTests {
     assertTrue(cmd.execute(manager, view));
   }
 
-  // ========== PrintEventsOnCommand Tests ==========
+  
 
   @Test
   public void testPrintEventsOnCommand() throws IOException {
@@ -158,7 +158,7 @@ public class CommandTests {
     assertTrue(cmd.execute(manager, view));
   }
 
-  // ========== PrintEventsRangeCommand Tests ==========
+  
 
   @Test
   public void testPrintEventsRangeCommand() throws IOException {
@@ -167,7 +167,7 @@ public class CommandTests {
     assertTrue(cmd.execute(manager, view));
   }
 
-  // ========== ShowStatusCommand Tests ==========
+  
 
   @Test
   public void testShowStatusCommandBusy() throws IOException {
@@ -185,11 +185,11 @@ public class CommandTests {
     assertTrue(cmd.execute(manager, view));
   }
 
-  // ========== EditEventCommand Tests ==========
+  
 
   @Test
-  // TC 14: This test verifies that a property of an existing event in the calendar
-  // can be edited. Input: Edit subject from "Old" to "New". Expected: Edit succeeds.
+  
+  
   public void testEditEventCommandSuccess() throws IOException {
     EventInterface event = new Event("Old",
         LocalDateTime.of(2025, 6, 1, 10, 0),
@@ -201,14 +201,14 @@ public class CommandTests {
         "2025-06-01T10:00", "2025-06-01T11:00", "New");
     assertTrue(cmd.execute(manager, view));
 
-    // Verify the subject was actually changed
+    
     EventInterface editedEvent = model.findEventByProperties("New",
         LocalDateTime.of(2025, 6, 1, 10, 0),
         LocalDateTime.of(2025, 6, 1, 11, 0));
     assertFalse("Edited event should exist", editedEvent == null);
     assertTrue("Subject should be 'New'", editedEvent.getSubject().equals("New"));
 
-    // Verify old event no longer exists
+    
     EventInterface oldEvent = model.findEventByProperties("Old",
         LocalDateTime.of(2025, 6, 1, 10, 0),
         LocalDateTime.of(2025, 6, 1, 11, 0));
@@ -234,7 +234,7 @@ public class CommandTests {
         "2025-06-01T10:00", "2025-06-01T11:00", "2025-06-01T09:30");
     assertTrue(cmd1.execute(manager, view));
     
-    // After editing start to 09:30, end becomes 10:30 (duration preserved: 1 hour)
+    
     EditEventCommand cmd2 = new EditEventCommand("end", "Test",
         "2025-06-01T09:30", "2025-06-01T10:30", "2025-06-01T12:00");
     assertTrue(cmd2.execute(manager, view));
@@ -253,8 +253,8 @@ public class CommandTests {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  // TC 18: This test verifies that editing a non-existent property of an event
-  // is not allowed. Input: Edit with property "invalid". Expected: IllegalArgumentException.
+  
+  
   public void testEditEventCommandInvalidProperty() throws IOException {
     EditEventCommand cmd = new EditEventCommand("invalid", "Test",
         "2025-06-01T10:00", "2025-06-01T11:00", "value");
@@ -263,15 +263,15 @@ public class CommandTests {
         LocalDateTime.of(2025, 6, 1, 11, 0),
         null, null, false, UUID.randomUUID(), null);
     model.createEvent(event);
-    cmd.execute(manager, view); // Should throw
+    cmd.execute(manager, view); 
   }
 
-  // ========== EditEventsCommand Tests ==========
+  
 
   @Test
-  // TC 15: This test verifies that a property of all events in an existing series
-  // starting at or after a specific time can be edited. Input: Edit location from
-  // 2025-06-09T09:00 forward. Expected: Edit succeeds for that and later events.
+  
+  
+  
   public void testEditEventsCommand() throws IOException {
     EventInterface template = new Event("Standup",
         LocalDateTime.of(2025, 6, 2, 9, 0),
@@ -287,7 +287,7 @@ public class CommandTests {
         "2025-06-09T09:00", "Room A");
     assertTrue(cmd.execute(manager, view));
 
-    // Verify the location was updated for events from 2025-06-09 forward
+    
     java.util.List<EventInterface> events = model.getAllEvents();
     long eventsWithLocation = events.stream()
         .filter(e -> e.getSubject().equals("Standup"))
@@ -297,12 +297,12 @@ public class CommandTests {
     assertTrue("At least one event should have updated location", eventsWithLocation > 0);
   }
 
-  // ========== EditSeriesCommand Tests ==========
+  
 
   @Test
-  // TC 16: This test verifies that a property of all events in an existing series
-  // can be edited. Input: Edit subject from "Standup" to "Daily Standup" for entire series.
-  // Expected: All events in series updated.
+  
+  
+  
   public void testEditSeriesCommand() throws IOException {
     EventInterface template = new Event("Standup",
         LocalDateTime.of(2025, 6, 2, 9, 0),
@@ -318,7 +318,7 @@ public class CommandTests {
         "2025-06-02T09:00", "Daily Standup");
     assertTrue(cmd.execute(manager, view));
 
-    // Verify all events in the series have the new subject
+    
     java.util.List<EventInterface> events = model.getAllEvents();
     long standupCount = events.stream()
         .filter(e -> e.getSubject().equals("Standup"))
@@ -330,7 +330,7 @@ public class CommandTests {
     assertTrue("All 3 events should have new subject 'Daily Standup'", dailyStandupCount == 3);
   }
 
-  // ========== ExportCommand Tests ==========
+  
 
   @Test
   public void testExportCommand() throws IOException {
@@ -349,15 +349,15 @@ public class CommandTests {
     }
   }
 
-  // ========== ExitCommand Tests ==========
+  
 
   @Test
   public void testExitCommand() throws IOException {
     ExitCommand cmd = new ExitCommand();
-    assertFalse(cmd.execute(manager, view)); // Returns false to signal exit
+    assertFalse(cmd.execute(manager, view)); 
   }
 
-  // ========== NoOpCommand Tests ==========
+  
 
   @Test
   public void testNoOpCommandEmpty() throws IOException {
@@ -368,7 +368,7 @@ public class CommandTests {
   @Test(expected = InvalidCommandException.class)
   public void testNoOpCommandWithInput() throws IOException {
     NoOpCommand cmd = new NoOpCommand("invalid command");
-    cmd.execute(manager, view); // Should throw
+    cmd.execute(manager, view); 
   }
 }
 

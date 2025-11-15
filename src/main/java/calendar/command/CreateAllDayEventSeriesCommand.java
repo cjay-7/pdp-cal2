@@ -51,7 +51,7 @@ public class CreateAllDayEventSeriesCommand implements CommandInterface {
   @Override
   public boolean execute(CalendarManager manager, ViewInterface view) throws IOException {
     try {
-      // Get current calendar
+      
       Calendar currentCal = manager.getCurrentCalendar();
       if (currentCal == null) {
         view.displayError("No calendar selected. Use 'use calendar --name <name>' first.");
@@ -59,20 +59,20 @@ public class CreateAllDayEventSeriesCommand implements CommandInterface {
       }
       CalendarModelInterface model = currentCal.getModel();
 
-      // Parse weekdays
+      
       Weekday[] weekdays = Weekday.parseString(weekdaysString);
       Set<java.time.DayOfWeek> dayOfWeekSet = Weekday.toDayOfWeekSet(weekdays);
 
-      // Create all-day template event: 8am-5pm on the specified date
+
       LocalDate date = DateTimeParser.parseDate(dateString);
-      LocalDateTime start = LocalDateTime.of(date, LocalTime.of(8, 0));
-      LocalDateTime end = LocalDateTime.of(date, LocalTime.of(17, 0));
+      LocalDateTime start = LocalDateTime.of(date, LocalTime.of(Event.ALL_DAY_EVENT_START_HOUR, 0));
+      LocalDateTime end = LocalDateTime.of(date, LocalTime.of(Event.ALL_DAY_EVENT_END_HOUR, 0));
 
       UUID seriesId = UUID.randomUUID();
       EventInterface template = new Event(subject, start, end, null, null, false,
           UUID.randomUUID(), seriesId);
 
-      // Parse end condition
+      
       LocalDate endDate = null;
       Integer occurrencesCount = null;
       if (usesEndDate) {
@@ -81,7 +81,7 @@ public class CreateAllDayEventSeriesCommand implements CommandInterface {
         occurrencesCount = occurrences;
       }
 
-      // Create series
+      
       EventSeries series = new EventSeries(seriesId, template, dayOfWeekSet,
           endDate, occurrencesCount, usesEndDate);
 

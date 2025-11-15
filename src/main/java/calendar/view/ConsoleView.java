@@ -37,15 +37,15 @@ public class ConsoleView implements ViewInterface {
     }
 
     for (EventInterface e : events) {
-      // Format: <subject> starting on <startdate> at <starttime>, ending on <enddate> at <endtime>
-      // Include location if present
+      
+      
       out.append("- ").append(e.getSubject()).append(" starting on ")
           .append(formatDate(e.getStartDateTime().toLocalDate())).append(" at ")
           .append(formatTime(e.getStartDateTime().toLocalTime())).append(", ending on ")
           .append(formatDate(e.getEndDateTime().toLocalDate())).append(" at ")
           .append(formatTime(e.getEndDateTime().toLocalTime()));
 
-      // Add location if present
+      
       if (e.getLocation().isPresent()) {
         out.append(", location: ").append(e.getLocation().get());
       }

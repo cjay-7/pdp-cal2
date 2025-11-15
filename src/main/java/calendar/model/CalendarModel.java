@@ -26,10 +26,14 @@ import java.util.stream.Collectors;
  */
 public class CalendarModel implements CalendarModelInterface {
 
-  // Storage: Using Set for fast uniqueness checking
+  /**
+   * Maximum number of years to generate series events into the future.
+   * Prevents infinite loops for series with no end date or far-future end dates.
+   */
+  private static final int SERIES_MAX_YEARS = 10;
+
   private final Set<EventInterface> events;
 
-  // Map seriesId -> EventSeries configuration
   private final Map<UUID, EventSeries> seriesConfigs;
 
   /**
@@ -44,7 +48,6 @@ public class CalendarModel implements CalendarModelInterface {
   public boolean createEvent(EventInterface event) {
     Objects.requireNonNull(event, "Event cannot be null");
 
-    // Check for duplicate (uniqueness: subject + start + end)
     if (events.contains(event)) {
       return false;
     }
@@ -57,22 +60,18 @@ public class CalendarModel implements CalendarModelInterface {
   public boolean createEventSeries(EventSeries series) {
     Objects.requireNonNull(series, "Series cannot be null");
 
-    // Generate all occurrences
     List<EventInterface> occurrences = generateOccurrences(series);
 
-    // Check if any duplicate exists
     for (EventInterface occurrence : occurrences) {
       if (events.contains(occurrence)) {
         return false;
       }
     }
 
-    // All are unique, add them all
     for (EventInterface occurrence : occurrences) {
       events.add(occurrence);
     }
 
-    // Store series configuration
     seriesConfigs.put(series.getSeriesId(), series);
 
     return true;
@@ -88,15 +87,12 @@ public class CalendarModel implements CalendarModelInterface {
       return false;
     }
 
-    // Apply modifications
     EventInterface modified = applyEditSpec(event, spec);
 
-    // Check if modified event would be duplicate (and different from original)
     if (!modified.equals(event) && events.contains(modified)) {
       return false;
     }
 
-    // Remove old, add new
     events.remove(event);
     events.add(modified);
 
@@ -114,7 +110,6 @@ public class CalendarModel implements CalendarModelInterface {
       return false;
     }
 
-    // Find all events in series from the given date forward
     List<EventInterface> toEdit = events.stream()
         .filter(e -> e.getSeriesId().isPresent())
         .filter(e -> e.getSeriesId().get().equals(seriesId))
@@ -125,30 +120,30 @@ public class CalendarModel implements CalendarModelInterface {
       return false;
     }
 
-    // If editing start time, events must leave the series
+    
     boolean mustSplit = spec.getNewStart() != null;
 
-    // Apply edits to each event
+    
     List<EventInterface> modifiedEvents = new ArrayList<>();
     for (EventInterface event : toEdit) {
-      // If editing start time, preserve each event's date but use new time
+      
       EditSpec eventSpec = spec;
       if (spec.getNewStart() != null && spec.getNewEnd() == null) {
-        // Extract time component from new start and apply to this event's date
+        
         java.time.LocalTime newTime = spec.getNewStart().toLocalTime();
         java.time.LocalDate eventDate = event.getStartDateTime().toLocalDate();
         LocalDateTime adjustedStart = LocalDateTime.of(eventDate, newTime);
         eventSpec = new EditSpec(
             spec.getNewSubject(),
             adjustedStart,
-            null, // Will be calculated in applyEditSpec to preserve duration
+            null, 
             spec.getNewDescription(),
             spec.getNewLocation(),
             spec.getNewStatus());
       }
       EventInterface modified = applyEditSpec(event, eventSpec);
 
-      // If splitting, remove series ID by creating a new Event without seriesId
+      
       if (mustSplit) {
         modified = new Event(
             modified.getSubject(),
@@ -158,11 +153,11 @@ public class CalendarModel implements CalendarModelInterface {
             modified.getLocation().orElse(null),
             modified.isPrivate(),
             modified.getId(),
-            null  // Remove series ID
+            null  
         );
       }
 
-      // Check for duplicates
+      
       if (!modified.equals(event) && events.contains(modified)) {
         return false;
       }
@@ -170,16 +165,16 @@ public class CalendarModel implements CalendarModelInterface {
       modifiedEvents.add(modified);
     }
 
-    // All valid, apply changes
+    
     for (int i = 0; i < toEdit.size(); i++) {
       events.remove(toEdit.get(i));
       events.add(modifiedEvents.get(i));
     }
 
-    // If split, update series configuration
+    
     if (mustSplit && !toEdit.isEmpty()) {
-      // Events that were split no longer belong to series
-      // Series config remains for remaining events
+      
+      
     }
 
     return true;
@@ -195,7 +190,7 @@ public class CalendarModel implements CalendarModelInterface {
       return false;
     }
 
-    // Find all events in series
+    
     List<EventInterface> toEdit = events.stream()
         .filter(e -> e.getSeriesId().isPresent())
         .filter(e -> e.getSeriesId().get().equals(seriesId))
@@ -205,30 +200,30 @@ public class CalendarModel implements CalendarModelInterface {
       return false;
     }
 
-    // If editing start time, events must leave the series
+    
     boolean mustSplit = spec.getNewStart() != null;
 
-    // Apply edits to each event
+    
     List<EventInterface> modifiedEvents = new ArrayList<>();
     for (EventInterface event : toEdit) {
-      // If editing start time, preserve each event's date but use new time
+      
       EditSpec eventSpec = spec;
       if (spec.getNewStart() != null && spec.getNewEnd() == null) {
-        // Extract time component from new start and apply to this event's date
+        
         java.time.LocalTime newTime = spec.getNewStart().toLocalTime();
         java.time.LocalDate eventDate = event.getStartDateTime().toLocalDate();
         LocalDateTime adjustedStart = LocalDateTime.of(eventDate, newTime);
         eventSpec = new EditSpec(
             spec.getNewSubject(),
             adjustedStart,
-            null, // Will be calculated in applyEditSpec to preserve duration
+            null, 
             spec.getNewDescription(),
             spec.getNewLocation(),
             spec.getNewStatus());
       }
       EventInterface modified = applyEditSpec(event, eventSpec);
 
-      // If splitting, remove series ID by creating a new Event without seriesId
+      
       if (mustSplit) {
         modified = new Event(
             modified.getSubject(),
@@ -238,11 +233,11 @@ public class CalendarModel implements CalendarModelInterface {
             modified.getLocation().orElse(null),
             modified.isPrivate(),
             modified.getId(),
-            null  // Remove series ID
+            null  
         );
       }
 
-      // Check for duplicates
+      
       if (!modified.equals(event) && events.contains(modified)) {
         return false;
       }
@@ -250,13 +245,13 @@ public class CalendarModel implements CalendarModelInterface {
       modifiedEvents.add(modified);
     }
 
-    // All valid, apply changes
+    
     for (int i = 0; i < toEdit.size(); i++) {
       events.remove(toEdit.get(i));
       events.add(modifiedEvents.get(i));
     }
 
-    // If split, remove series config
+    
     if (mustSplit) {
       seriesConfigs.remove(seriesId);
     }
@@ -294,7 +289,7 @@ public class CalendarModel implements CalendarModelInterface {
 
     return events.stream()
         .filter(e -> {
-          // Event overlaps if: eventStart < rangeEnd AND eventEnd > rangeStart
+          
           return e.getStartDateTime().isBefore(endDateTime)
               && e.getEndDateTime().isAfter(startDateTime);
         })
@@ -308,7 +303,7 @@ public class CalendarModel implements CalendarModelInterface {
 
     return events.stream()
         .anyMatch(e -> {
-          // Event is busy at this time if it starts before or at time and ends after time
+          
           return !e.getStartDateTime().isAfter(dateTime)
               && e.getEndDateTime().isAfter(dateTime);
         });
@@ -318,7 +313,7 @@ public class CalendarModel implements CalendarModelInterface {
   public void exportToCsv(Path filePath) throws IOException {
     Objects.requireNonNull(filePath, "File path cannot be null");
 
-    // Sort events and delegate CSV formatting to utility to avoid duplication
+    
     List<EventInterface> sortedEvents = events.stream()
         .sorted((e1, e2) -> e1.getStartDateTime().compareTo(e2.getStartDateTime()))
         .collect(java.util.stream.Collectors.toList());
@@ -344,8 +339,8 @@ public class CalendarModel implements CalendarModelInterface {
     Objects.requireNonNull(startDateTime, "Start date-time cannot be null");
     Objects.requireNonNull(endDateTime, "End date-time cannot be null");
 
-    // Create a temporary event to use equals() for matching
-    // Note: This is a bit of a hack, but works with our equals() implementation
+    
+    
     return events.stream()
         .filter(e -> e.getSubject().equals(subject.trim()))
         .filter(e -> e.getStartDateTime().equals(startDateTime))
@@ -354,7 +349,7 @@ public class CalendarModel implements CalendarModelInterface {
         .orElse(null);
   }
 
-  // ========== Private Helper Methods ==========
+  
 
   /**
    * Generates all occurrences for an event series.
@@ -368,26 +363,26 @@ public class CalendarModel implements CalendarModelInterface {
     LocalDateTime startTime = series.getTemplate().getStartDateTime();
     LocalDateTime endTime = series.getTemplate().getEndDateTime();
 
-    // Get time components (same for all occurrences)
+    
     LocalDate templateDate = startTime.toLocalDate();
     int startHour = startTime.getHour();
     int startMinute = startTime.getMinute();
-    // end hour/minute not needed; duration captures the offset
+    
     int durationMinutes = (int) java.time.Duration.between(startTime, endTime).toMinutes();
 
     LocalDate currentDate = templateDate;
     Set<DayOfWeek> weekdays = series.getWeekdays();
     int occurrenceCount = 0;
 
-    // Continue generating until we hit the limit
+    
     while (true) {
-      // Check if we should generate on this date
+      
       if (weekdays.contains(currentDate.getDayOfWeek())) {
         LocalDateTime eventStart = LocalDateTime.of(currentDate,
             java.time.LocalTime.of(startHour, startMinute));
         LocalDateTime eventEnd = eventStart.plusMinutes(durationMinutes);
 
-        // Create event for this occurrence
+        
         EventInterface occurrence = new Event(
             series.getTemplate().getSubject(),
             eventStart,
@@ -395,28 +390,27 @@ public class CalendarModel implements CalendarModelInterface {
             series.getTemplate().getDescription().orElse(null),
             series.getTemplate().getLocation().orElse(null),
             series.getTemplate().isPrivate(),
-            UUID.randomUUID(), // Each occurrence gets its own ID
+            UUID.randomUUID(), 
             series.getSeriesId());
 
         occurrences.add(occurrence);
         occurrenceCount++;
 
-        // Check if we've hit the occurrence limit
+        
         if (series.getOccurrences() != null && occurrenceCount >= series.getOccurrences()) {
           break;
         }
       }
 
-      // Check if we've passed the end date
+      
       if (series.usesEndDate() && currentDate.isAfter(series.getEndDate())) {
         break;
       }
 
-      // Move to next day
+      
       currentDate = currentDate.plusDays(1);
 
-      // Safety check: prevent infinite loop
-      if (currentDate.isAfter(templateDate.plusYears(10))) {
+      if (currentDate.isAfter(templateDate.plusYears(SERIES_MAX_YEARS))) {
         break;
       }
     }
@@ -442,15 +436,15 @@ public class CalendarModel implements CalendarModelInterface {
 
     LocalDateTime newEnd;
     if (spec.getNewEnd() != null) {
-      // Explicit end time change
+      
       newEnd = spec.getNewEnd();
     } else if (spec.getNewStart() != null && spec.getNewEnd() == null) {
-      // Only start time changed - preserve duration
+      
       java.time.Duration duration = java.time.Duration.between(
           event.getStartDateTime(), event.getEndDateTime());
       newEnd = newStart.plus(duration);
     } else {
-      // No changes to start/end
+      
       newEnd = event.getEndDateTime();
     }
 
@@ -466,7 +460,7 @@ public class CalendarModel implements CalendarModelInterface {
         ? spec.getNewStatus().isPrivate()
         : event.isPrivate() ? Boolean.TRUE : Boolean.FALSE;
 
-    // Keep same ID and series ID
+    
     return event.withModifications(
         newSubject, newStart, newEnd, newDescription, newLocation, newIsPrivate,
         event.getSeriesId().orElse(null));
