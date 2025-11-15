@@ -3,8 +3,7 @@ plugins {
     id 'application'
     id 'checkstyle'
     id 'jacoco'
-    // Temporarily commented out for JAR building due to network issues
-    // id 'info.solidsoft.pitest' version '1.15.0'
+    id 'info.solidsoft.pitest' version '1.15.0'
 }
 
 group 'calendar'
@@ -77,8 +76,6 @@ tasks.withType(Checkstyle) {
 }
 
 // PIT Mutation Testing Configuration
-// Temporarily commented out for JAR building due to network issues
-/*
 pitest {
     targetClasses = ['calendar.**'] // Adjust to match your package structure
     targetTests = ['*'] // Adjust to match your test package structure
@@ -100,4 +97,3 @@ pitest {
     // Fail build if mutation score is below threshold
     failWhenNoMutations = false
 }
-*/
